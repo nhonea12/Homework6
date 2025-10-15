@@ -1,0 +1,24 @@
+---
+title: "ST 558 Homework 6"
+author: "Nathan Honea"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+# Task 1: Conceptual Questions
+
+1. The purpose of the `lapply()` function is to apply a function to a list, and return a list. The equivalent in the `purrr` package is the `map()` function.
+2. `lapply(X = my_list, FUN = cor, method = "kendall")`
+  i) `method = "kendall"` needs to be after defining `FUN = cor`, not within `cor()`
+3. Two advantages of using the `purrr` package over base R are the helper functions included in `purr` and the general consistency it has.
+4. A side-effect function is a function does not automatically return a modified version of the data. Examples include `print()` and `plot()`.
+5. You can create a variable called `sd` within a function and not have it overwrite `sd()` from base R because R creates a separate environment for your functions, with the objects created within thr function only existing while the function is being run.
+
+# Task 2 : Writing R Functions
+
+```{r}
+
+```
+
+
