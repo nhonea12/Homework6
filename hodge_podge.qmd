@@ -17,7 +17,147 @@ editor_options:
 
 # Task 2 : Writing R Functions
 
-```{r}
+```{r, error=TRUE}
+library(tidyverse)
+
+#1. 
+# define a function to return the root mean squared error, allow for the removal of NAs by included ellipses
+getRMSE <- function(responses, predictions, ...){
+  RMSE = sqrt(mean((responses - predictions)^2, ...))
+  RMSE
+}
+
+#2. 
+# run code to create response values and predictions
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10 * x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+
+# test the getRMSE() function
+getRMSE(responses = resp, predictions = pred)
+
+# replace two of the response values with NA_real_
+resp_na <- resp
+resp_na[51] = NA_real_
+resp_na[11] = NA_real_
+
+# test the getRMSE() function without specification to remove missing values
+getRMSE(responses = resp_na, predictions = pred)
+
+# test the getRMSE() function with specification to remove missing values
+getRMSE(responses = resp_na, predictions = pred, na.rm = TRUE)
+
+#. 
+# define the MAE function
+getMAE <- function(responses, predictions, ...){
+  MAE <- mean(abs(responses - predictions), ...)
+  MAE
+}
+
+#4. 
+# create response and prediction values for MAE
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10 * x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+
+# test the getMAE() function
+getMAE(responses = resp, predictions = pred)
+
+# replace two of the response values with NA_real_
+resp_na <- resp
+resp_na[51] = NA_real_
+resp_na[11] = NA_real_
+
+# test the getMAE() function without specification to remove missing values
+getMAE(responses = resp_na, predictions = pred)
+
+# test the getMAE() function with specification to remove missing values
+getMAE(responses = resp_na, predictions = pred, na.rm = TRUE)
+
+# 5
+# create a wrapper function to produce one or both of the RMSE and MAE, with values returned with appropriate names
+metric_wrapper <- function(resps, preds, metric = c("RMSE", "MAE"), ...){
+  if(!is.vector(resps)){
+    stop("Error! 'resps' is not a vector.")
+  }
+  if(!is.vector(preds)){
+    stop("Error! 'preds' is not a vector.")
+  }
+  if(!is.atomic(resps)){
+    stop("Error! 'resps' is not atomic.")
+  }
+  if(!is.atomic(preds)){
+    stop("Error! 'preds' is not atomic.")
+  }
+  if(!is.numeric(resps)){
+    stop("Error! 'resps' is not numeric.")
+  }
+  if(!is.numeric(preds)){
+    stop("Error! 'preds' is not numeric.")
+  } # I did not combine the if statements so the user will know specifically what the issue with their inputs is
+  
+  # create an empty list to put your results in
+  results <- list()
+  
+  # check if RMSE is in the metric, if it is, calculate it using getRMSE() and return it under the name RMSE
+  if ("RMSE" %in% metric) {
+    results$RMSE <- getRMSE(resps, preds, ...)
+  }
+  
+  # check if MAE is in the metric, if it is, calculate it using getMAE() and return it under the name MAE
+  if ("MAE" %in% metric) {
+    results$MAE <- getMAE(resps, preds, ...)
+  }
+  
+  # return the results as a vector by unlisting
+  return(unlist(results))
+}
+
+#6. 
+# create response and prediction values for the wrapper function
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10 * x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+
+# test the wrapper function with defaults (both RMSE and MAE)
+metric_wrapper(resps = resp, preds = pred)
+
+# test the wrapper function only on RMSE
+metric_wrapper(resps = resp, preds = pred, metric = "RMSE")
+
+# test the wrapper function only on MAE
+metric_wrapper(resps = resp, preds = pred, metric = "MAE")
+
+# replace two of the response values with NA_real_
+resp_na <- resp
+resp_na[51] = NA_real_
+resp_na[11] = NA_real_
+
+# test the wrapper function without specification to remove missing values
+metric_wrapper(resps = resp_na, preds = pred)
+
+# test the wrapper function with specification to remove missing values
+metric_wrapper(resps = resp_na, preds = pred, na.rm = TRUE)
+
+# test the wrapper function only on RMSE after adding missing values
+metric_wrapper(resps = resp_na, preds = pred, metric = "RMSE", na.rm = TRUE)
+
+# test the wrapper function only on MAE after adding missing values
+metric_wrapper(resps = resp_na, preds = pred, metric = "MAE", na.rm = TRUE)
+
+# test the wrapper function while returning a non-vector for the response
+metric_wrapper(resps = iris, preds = pred)
+```
+
+# Task 3 : Practice with purrr
+
+```{r }
 
 ```
 
