@@ -158,7 +158,47 @@ metric_wrapper(resps = iris, preds = pred)
 # Task 3 : Practice with purrr
 
 ```{r }
+# linear model object
+lm_fit1 <- lm(Sepal.Length ~ Sepal.Width + Species, data = iris)
 
+# 1. pull coefficients in three different ways
+# with $
+lm_fit1$coefficients
+
+# with coef()
+coef(lm_fit1)
+
+# with pluck() from purrr
+lm_fit1 |> 
+  pluck("coefficients")
+
+# 2. fit different models and use map() and pluck() to get all the coefficients
+lm_fit2 <- lm(Sepal.Length ~ Sepal.Width, data = iris)
+lm_fit3 <- lm(Sepal.Length ~ Petal.Width + Sepal.Width + Species, data = iris)
+lm_fit4 <- lm(Sepal.Length ~ Petal.Width + Petal.Length + Sepal.Width + Species,
+data = iris)
+fits <- list(lm_fit1, lm_fit2, lm_fit3, lm_fit4)
+
+# pull out all the coeffients
+map(fits, pluck("coefficients"))
+
+# 3. Use map() and confint() to get confidence intervals for all coefficients of all models in the list
+map(fits, confint)
+
+# 4. create histograms of the residuals for each model
+# set up 2x2 plotting window
+par(mfrow = c(2, 2))
+
+# create histogram with map(), walk() and hist
+fits |> 
+  map(pluck("residuals")) |> 
+  walk(hist)
+
+# 5. redo part 4 with adding names via set_names() and changing walk() to iwalk(), using an anonymous function for the histogram
+fits |> 
+  map(pluck("residuals")) |> 
+  set_names("fit1", "fit2", "fit3", "fit4") |> 
+  iwalk(\(x, idx) hist(x, main = idx))
 ```
 
 
